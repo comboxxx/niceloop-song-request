@@ -8,18 +8,14 @@ import {
   Link, Switch
 } from 'react-router-dom'
 import SongListContainer from './SongListContainer'
-import Navbar from './Navbar'
-import Banner from './Banner'
+
 //import { Button, Modal, OverlayTrigger } from 'react-bootstrap'
 
 class App extends Component {
 
   render() {
     return (
-      <div>
-        
-        <Navbar />
-        <Banner />
+      <div >
         <Router>
           <Switch>
             <Route path="/:id" component={SongListContainer} />

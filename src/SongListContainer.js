@@ -9,10 +9,9 @@ import SongList from './SongList'
 import * as firebaseDb from './firebaseRef'
 import FilterButton from './FilterButton'
 import SongRequestModal from './SongRequestModal'
-
+import Navbar from './Navbar'
+import Banner from './Banner'
 class SongListContainer extends Component {
-
-
 
   constructor(props) {
     super(props)
@@ -63,11 +62,13 @@ class SongListContainer extends Component {
     debugger
     return (
       <div>
-
-
+        <div styl={{overflowY: 'scroll '}}>
+        <Navbar />
+        <Banner />
         <SongRequestModal modalVisible={this.state.modalVisible} closeModal={this.closeModal} />
         <FilterButton changeSongFilter={this.changeSongFilter} />
         <SongList list={this.state.list} songFilter={this.state.songFilter} />
+        </div>
         <SongRequest match={this.props.match} showModal={this.showModal} />
       </div>
     );

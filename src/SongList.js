@@ -48,7 +48,7 @@ updateVote(key,vote)
         // }
 
         return (
-            <div style={{  height: 300, overflowY: 'scroll ' }} >
+            <div style={{  height: 300,  }} >
                 {sortedData.map((song, i) => {
                     let songListColor
                     if (i % 2 === 0) {
@@ -61,7 +61,7 @@ updateVote(key,vote)
                         <div className="container-fluid" style={{ backgroundColor: 'lightyellow' }} key={i}>
                             <div className="row ">
                                 <div className="col col-9" style={{ backgroundColor: songListColor }}>
-                                    <h4 style={{ paddingLeft: 10, paddingTop: 10 }}>{song.song} </h4>
+                                    <h4 style={{ paddingLeft: 10, paddingTop: 10 }}>{song.song} ({song.status})</h4>
 
                                     <span style={{ paddingLeft: 10 }}>Time : {moment(song.dateTime).format("h:mm")}&nbsp; By: {song.by}</span>
                                 </div>
