@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import {
-    BrowserRouter as Router,
-    Route,
-    Link, Switch
-} from 'react-router-dom'
 import Modal from 'react-modal'
 import * as firebaseDb from './firebaseRef'
 import moment from 'moment'
