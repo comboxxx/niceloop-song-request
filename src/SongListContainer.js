@@ -3,7 +3,6 @@ import SongRequest from './SongRequest'
 import SongList from './SongList'
 import * as firebaseDb from './firebaseRef'
 import FilterButton from './FilterButton'
-import SongRequestModal from './SongRequestModal'
 import _ from 'lodash'
 
 class SongListContainer extends Component {
@@ -13,12 +12,9 @@ class SongListContainer extends Component {
     this.state = {
       list: {},
       listRow: [],
-      modalVisible: false,
       filter: 'time'
-      // songFilter: 'time'
     }
-    this.showModal = this.showModal.bind(this)
-    this.closeModal = this.closeModal.bind(this)
+
     this.changeSongFilter = this.changeSongFilter.bind(this)
     this.updateVote = this.updateVote.bind(this)
 
@@ -30,47 +26,51 @@ class SongListContainer extends Component {
     firebaseDb.start(id);
     let self = this
     firebaseDb.songRef.on('value', (snap) => {
-      let val = snap.val()
-      let list = {}
+      let list = snap.val()
       let listRow = []
       let oldList = this.state.listRow
-      _.map(val, (data, key) => {
-        listRow.push({ key, dateTime: data.dateTime, vote: data.vote })
-        list = {
-          ...list,
-          [key]: {
-            ...data
-          }
+
+      let newList = []
+      let lastList = []
+      let index = 0
+      let newListIndex = 0
+      _.map(list, (data, key) => {
+
+        if (oldList[index] && oldList[index].key === key) {
+          newList.push({ key, dateTime: data.dateTime, vote: data.vote, row: newListIndex, song: data.song })
+          newListIndex = newListIndex + 1
+        }
+        else {
+          lastList.push({ key, dateTime: data.dateTime, vote: data.vote, song: data.song })
         }
       })
-      debugger
-      if (oldList.length === listRow.length) {
-        self.setState({
-          list,
-          listRow: oldList,
+
+      if (lastList.length > 0) {
+        lastList.map((item, i) => {
+          newList.push({ ...item, row: newListIndex })
+          newListIndex = newListIndex + 1
         })
+      }
+      debugger
+      if (this.state.filter === 'time') {
+        newList = _.orderBy(newList, (item) => {
+          return item.dateTime // TODO: ใส่ - แล้วรวน
+        })
+        newList = _.reverse(newList)
       }
       else {
-        let sortedList
-        if (this.state.filter === 'time') {
-          sortedList = _.orderBy(listRow, (item) => {
-            return -item.dateTime;
-          })
-        } else {
-          sortedList = _.orderBy(listRow, (item) => {
-            return -item.vote;
-          })
-        }
-
-        self.setState({
-          list,
-          listRow: sortedList
+        newList = _.orderBy(newList, (item) => {
+          return item.row;
         })
       }
+
+      self.setState({
+        list,
+        listRow: newList
+      })
     })
 
   }
-
   componentWillUnmount() {
     firebaseDb.songRef.off()
   }
@@ -83,17 +83,7 @@ class SongListContainer extends Component {
     this.setState({ listRow: newListRow })
 
   }
-  showModal() {
-    this.setState({
-      modalVisible: true
-    })
-  }
 
-  closeModal() {
-    this.setState({
-      modalVisible: false
-    })
-  }
   changeSongFilter(value) {
     let newSongList
 
@@ -105,8 +95,10 @@ class SongListContainer extends Component {
     }
     else {
       newSongList = _.orderBy(this.state.listRow, (item) => {
-        return -item.dateTime;
+
+        return item.dateTime;
       })
+      newSongList = _.reverse(newSongList)
       this.setState({ listRow: newSongList, filter: value })
     }
 
@@ -114,14 +106,13 @@ class SongListContainer extends Component {
   render() {
     return (
       <div>
-        <div style={{ overflowY: 'scroll ' }}>
-          <SongRequestModal modalVisible={this.state.modalVisible} closeModal={this.closeModal} />
+        <div >
           <FilterButton changeSongFilter={this.changeSongFilter} />
           <SongList list={this.state.list}
             updateVote={this.updateVote}
             listRow={this.state.listRow} />
         </div>
-        <SongRequest match={this.props.match} showModal={this.showModal} />
+        {/* <SongRequest match={this.props.match} showModal={this.showModal} /> */}
       </div>
     );
   }

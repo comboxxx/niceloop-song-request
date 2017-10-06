@@ -84,7 +84,7 @@ class SongListContainer extends Component {
 
                         {isUploaded === false ? (<div style={{ paddingBottom: 30 }} >
                             {/* <span>อัพโหลดไฟล์</span> */}
-                            <div >
+                            {/* <div >
                                 <center>
                                     <label className="custom-file">
                                         <input type="file" id="file" className="custom-file-input"
@@ -92,6 +92,10 @@ class SongListContainer extends Component {
                                         <span className="custom-file-control"></span>
                                     </label>
                                 </center>
+                            </div> */}
+                            <div className="form-group" >
+                                <span>อัพโหลดรูป</span>
+                                <input style={{ backgroundColor: 'powderblue' }} onChange={(e) => this._handleImageChange(e)} type="file" className="form-control-file" id="exampleInputFile" aria-describedby="fileHelp" />
                             </div>
                         </div>) : (<div><span style={{ color: 'green' }}>...อัพโหลดรูปภาพสำเร็จ...</span></div>)}
                     </div>
